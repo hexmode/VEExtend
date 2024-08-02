@@ -1,0 +1,12 @@
+/*!
+ * VisualEditor ContentEditable CenterParagraphNode styles.
+ *
+ * @copyright 2024 NicheWork, LLC
+ * @license GPL-3-or-later
+ */
+
+.ve-ce-centerparagraph {
+	margin-left: auto;
+	margin-right: auto;
+	width: 20em;
+}

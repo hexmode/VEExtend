@@ -1,0 +1,56 @@
+{
+	"name": "VEExtend",
+	"author": [
+		"Mark A. Hershberger <mah@everybody.org>"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:VEExtend",
+	"descriptionmsg": "veextend-desc",
+	"license-name": "GPL-3.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.41.0",
+		"extensions": {
+			"VisualEditor": "*"
+		}
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\VEExtend\\": "src/"
+	},
+	"HookHandlers": {
+		"VEExtendHooks": {
+			"class": "MediaWiki\\Extension\\VEExtend\\Hooks"
+		}
+	},
+	"Hooks": {
+		"VisualEditorBeforeEditor": "VEExtendHooks"
+	},
+	"MessagesDirs": {
+		"VEExtend": [
+			"i18n"
+		]
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "VEExtend/resources"
+	},
+	"ResourceModules": {
+		"ext.VEExtend": {
+			"scripts": [
+				"ui/ve.ui.CommandRegistry.js",
+				"ui/tools/ve.ui.CenterParagraphFormatTool.js",
+				"dm/nodes/ve.dm.CenterParagraphNode.js",
+				"ce/nodes/ve.ce.CenterParagraphNode.js"
+			],
+			"styles": [
+				"ce/styles/nodes/ve.ce.CenterParagraphNode.css"
+			],
+			"dependencies": [
+				"ext.visualEditor.core"
+			],
+			"messages": [
+				"veextend-centerparagraph-tooltip"
+			]
+		}
+	},
+	"manifest_version": 2
+}

@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Mark A. Hershberger"
+		]
+	},
+	"veextend-desc": "Example VE extension.",
+	"veextend-centerparagraph-tooltip": "Center"
+}
