@@ -1,0 +1,19 @@
+/*!
+ * VisualEditor ContentEditable InverseAnnotation styles.
+ *
+ * @copyright 2024 NicheWork, LLC
+ * @license GPL-3-or-later
+ */
+
+.ve-ce-inverseAnnotation.ve-ce-annotation-active {
+	filter: invert(100%);
+}
+
+.ve-ce-inverseAnnotation {
+	filter: invert(100%);
+	background-color: white;
+}
+
+.oo-ui-icon-inverse {
+	background-image: /* @embed */ url(Yin_yang.svg);
+}

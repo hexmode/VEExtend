@@ -39,16 +39,22 @@
 				"ui/ve.ui.CommandRegistry.js",
 				"ui/tools/ve.ui.CenterParagraphFormatTool.js",
 				"dm/nodes/ve.dm.CenterParagraphNode.js",
-				"ce/nodes/ve.ce.CenterParagraphNode.js"
+				"ce/nodes/ve.ce.CenterParagraphNode.js",
+				"ui/tools/ve.ui.AnnotationsTool.js",
+				"dm/annotations/ve.dm.InverseAnnotation.js",
+				"ce/annotations/ve.ce.InverseAnnotation.js"
 			],
 			"styles": [
-				"ce/styles/nodes/ve.ce.CenterParagraphNode.css"
+				"ce/styles/nodes/ve.ce.CenterParagraphNode.css",
+				"ce/styles/annotations/ve.ce.InverseAnnotation.css"
 			],
 			"dependencies": [
-				"ext.visualEditor.core"
+				"ext.visualEditor.core",
+				"ext.visualEditor.mwwikitext"
 			],
 			"messages": [
-				"veextend-centerparagraph-tooltip"
+				"veextend-centerparagraph-tooltip",
+				"veextend-annotationbutton-inverse-tooltip"
 			]
 		}
 	},
