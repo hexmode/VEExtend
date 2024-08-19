@@ -97,3 +97,39 @@ At this point, our minimal RL section of our =extension.json= looks like this:
   }
 #+end_src
 We shouldn't be too surprised when nothing changes in the UI.
+
+[[[https://github.com/hexmode/VEExtend/commit/c3b54ac6e7aadd3f83ea21611e39e8d8025cd9e9?short_path=ecbc1aa#diff-ecbc1aa90e9ff97a00b0b2aab1551bceee0c4d21993146bdcb1af4de31c9cac6][link to README at this point]]]
+** Finally, a menu item
+Looking, again, at our git grep or codesearch, we can see that the menu items are registered as commands.  For instance, in [[https://gerrit.wikimedia.org/g/VisualEditor/VisualEditor/+/1ec0304ef8bdb5dc4a3f7ab81035fd54fec5cf99/src/ui/ve.ui.CommandRegistry.js#227][ve.ui.CommandRegistry.js]], we see this snippet:
+#+begin_src javascript
+  ve.ui.commandRegistry.register(
+  	new ve.ui.Command(
+  		'preformatted', 'format', 'convert',
+  		{ args: [ 'preformatted' ], supportedSelections: [ 'linear' ] }
+  	)
+  );
+#+end_src
+Using this boilerplate, we'll create our own [[./resources/ui/ve.ui.CommandRegistry.js][ve.ui.CommandRegistry.js]]:
+#+begin_src javascript
+  ve.ui.commandRegistry.register(
+  	new ve.ui.Command(
+  		'centerparagraph', 'format', 'convert',
+  		{
+  			args: [ 'centerparagraph' ],
+  			supportedSelections: [ 'linear' ]
+  		}
+  	)
+  );
+#+end_src
+We'll also add this file in the =scripts= portion of our =ext.VEExtend= module definiiton in our [[./extension.json#L34][extension.json]]:
+
+#+begin_src json
+  ...
+  			"scripts": [
+  				"ui/ve.ui.CommandRegistry.js",
+  				"ui/tools/ve.ui.CenterParagraphFormatTool.js"
+  			],
+  ...
+#+end_src
+#+html: <img src="img/format-menu-non-i18n.png" align="right"/>
+At this point, we have a menu item!

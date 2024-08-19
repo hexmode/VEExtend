@@ -31,6 +31,7 @@
 	"ResourceModules": {
 		"ext.VEExtend": {
 			"scripts": [
+				"ui/ve.ui.CommandRegistry.js",
 				"ui/tools/ve.ui.CenterParagraphFormatTool.js"
 			],
 			"styles": [
