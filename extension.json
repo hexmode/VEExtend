@@ -31,10 +31,12 @@
 	"ResourceModules": {
 		"ext.VEExtend": {
 			"scripts": [
+				"ui/tools/ve.ui.CenterParagraphFormatTool.js"
 			],
 			"styles": [
 			],
 			"dependencies": [
+				"ext.visualEditor.core"
 			],
 			"messages": [
 			]

@@ -18,4 +18,82 @@ To make adjustments to VE interface, use the [[https://www.mediawiki.org/wiki/Ex
 
 Unfortunately, it looks like [[https://gerrit.wikimedia.org/g/mediawiki/extensions/FileImporter/+/8bc547719233ea96b923c0b05973a42074f4dce6/src/VisualEditorHooks.php#19][FileImporter]] and [[https://gerrit.wikimedia.org/g/mediawiki/extensions/Translate/+/0df3076473e0dec3369dde2e068f3c3c44b2866b/src/PageTranslation/Hooks.php#354][Translate]] just [[https://gerrit.wikimedia.org/g/mediawiki/extensions/Translate/+/0df3076473e0dec3369dde2e068f3c3c44b2866b/src/HookHandler.php#251][disables VE]], so there isn't much useful information there.
 
-We'll create a [[https://www.mediawiki.org/wiki/ResourceLoader/Developing_with_ResourceLoader#:~:text=While building the page%2C add one or more,names to the load queue of the page.][ResourceLoader (RL) module]] for our JS called [[./extension.json#L28][ext.VEExtend]] and [[./src/Hooks.php#L32][add it in our hook]].  As you can see, to create something that can be installed as a MW extension, only a very minimal [[./extension.json][=extension.json=]] and [[./src/Hooks.php][=Hooks.php=]] file are needed.
+We'll create a [[https://www.mediawiki.org/wiki/ResourceLoader/Developing_with_ResourceLoader#:~:text=While building the page%2C add one or more,names to the load queue of the page.][ResourceLoader (RL) module]] for our JS called [[./extension.json#L28][ext.VEExtend]] and [[./src/Hooks.php#L32][add it in our hook]].  As you can see, to create something that can be installed as a MW extension, only a very minimal [[./extension.json][extension.json]] and [[./src/Hooks.php][Hooks.php]] file are needed.
+
+[[[https://github.com/hexmode/VEExtend/commit/77c41cc2c7c964223cf88a1546fdec08f910ef22?short_path=ecbc1aa#diff-ecbc1aa90e9ff97a00b0b2aab1551bceee0c4d21993146bdcb1af4de31c9cac6][link to README at this point]]]
+** Building out the module
+As a result, the bulk of the code for extending VE is in JS.  To understand it, the code Charlot gave me pointed to the documentation for the VE internals documentation for the [[https://www.mediawiki.org/wiki/VisualEditor/Internals#The_data_model][data model]] ([[https://www.mediawiki.org/wiki/VisualEditor/Internals/DM][ve.dm.*]]) and the [[https://www.mediawiki.org/wiki/VisualEditor/Internals#The_ContentEditable_view][ContentEditable view]] ([[https://www.mediawiki.org/wiki/VisualEditor/Internals/CE][ve.ce.*]]).  The documentation for the [[https://www.mediawiki.org/wiki/VisualEditor/Internals#The_user_interface_controls][user interface controls]] ([[https://www.mediawiki.org/wiki/VisualEditor/Internals/UI][ve.ui.*]]), though, is lacking as of this writing, so I had to do my best to read relevant portions of the VE code
+
+For example, to add an item to the dropdown that contains “Paragraph”, let's look for one of the items in the dropdown.  We'll use “Preformatted” since that word is more targetted to what we want than “Paragraph”.
+
+From looking at [[https://gerrit.wikimedia.org/r/plugins/gitiles/VisualEditor/VisualEditor/+/1ec0304ef8bdb5dc4a3f7ab81035fd54fec5cf99/i18n/en.json#147][en.json]], we can see that we'll need to grep for =preformatted= since that is most likely to lead us to the place were the message is used. (We ignore the =visualeditor-formatdropdown-format-= prefix since, for all we know at this point, it may be dynamically added.)
+
+Using =git grep -n preformatted src= on the VE repo (or [[https://codesearch.wmcloud.org/things/?q=preformatted&files=src%2F*&excludeFiles=&repos=VisualEditor+core][codesearch]]) finds 15 matches across 8 files.  Let's look at the ones in [[https://gerrit.wikimedia.org/g/VisualEditor/VisualEditor/+/1ec0304ef8bdb5dc4a3f7ab81035fd54fec5cf99/src/ui/tools/ve.ui.FormatTool.js#216][ve.ui.FormatTools.js]] where we see:
+#+begin_src javascript
+/**
+ * UserInterface preformatted tool.
+ *
+ * @class
+ * @extends ve.ui.FormatTool
+ * @constructor
+ * @param {OO.ui.ToolGroup} toolGroup
+ * @param {Object} [config] Configuration options
+ */
+ve.ui.PreformattedFormatTool = function VeUiPreformattedFormatTool() {
+	ve.ui.PreformattedFormatTool.super.apply( this, arguments );
+};
+OO.inheritClass( ve.ui.PreformattedFormatTool, ve.ui.FormatTool );
+ve.ui.PreformattedFormatTool.static.name = 'preformatted';
+ve.ui.PreformattedFormatTool.static.group = 'format';
+ve.ui.PreformattedFormatTool.static.title =
+	OO.ui.deferMsg( 'visualeditor-formatdropdown-format-preformatted' );
+ve.ui.PreformattedFormatTool.static.format = { type: 'preformatted' };
+ve.ui.PreformattedFormatTool.static.commandName = 'preformatted';
+ve.ui.toolFactory.register( ve.ui.PreformattedFormatTool );
+#+end_src
+
+Since we're in [[https://en.wikipedia.org/wiki/Cargo_cult_programming][cargo-cult programming mode]] right now (we don't understand what works or why), we'll just create our own by using the tried-and-true [[https://en.wikipedia.org/wiki/Copy-and-paste_programming][copy-and-paste programming]] method, er… we'll use this as [[https://en.wikipedia.org/wiki/Boilerplate_code][boilerplate]] for our own menu item whch we'll put in [[./resources/ui/tools/ve.ui.CenterParagraphFormatTool.js][ve.ui.CenterParagraphFormatTool.js]]:
+#+begin_src javascript
+  /**
+   ,* VEExtend's example CenterParagraph tool.
+   ,*
+   ,* @class
+   ,* @extends vu.ui.FormatTool
+   ,* @constructor
+   ,* @param {OO.ui.ToolGroup} toolGroup
+   ,* @param {Object} {config} Configuration options
+   ,*/
+  ve.ui.CenterParagraphFormatTool = function () {
+  	ve.ui.CenterParagraphFormatTool.super.apply( this, arguments );
+  };
+
+  OO.inheritClass( ve.ui.CenterParagraphFormatTool, ve.ui.FormatTool );
+
+  ve.ui.CenterParagraphFormatTool.static.name = 'centerparagraph';
+  ve.ui.CenterParagraphFormatTool.static.group = 'format';
+  ve.ui.CenterParagraphFormatTool.static.title =
+  	OO.ui.deferMsg( 'veextend-formatdropdown-format-centerparagraph' );
+  ve.ui.CenterParagraphFormatTool.static.format = { type: 'centerparagraph' };
+  ve.ui.CenterParagraphFormatTool.static.commandName = 'centerparagraph';
+
+  ve.ui.toolFactory.register( ve.ui.CenterParagraphFormatTool );
+#+end_src
+
+At this point, our minimal RL section of our =extension.json= looks like this:
+#+begin_src json
+  {
+  	...
+  	"ResourceModules": {
+  		"ext.VEExtend": {
+  			"scripts": [
+  				"ui/tools/ve.ui.CenterParagraphFormatTool.js"
+  			],
+  			"dependencies": [
+  				"ext.visualEditor.core"
+  			]
+  		}
+  	},
+  	...
+  }
+#+end_src
+We shouldn't be too surprised when nothing changes in the UI.
