@@ -1,0 +1,21 @@
+#+TITLE: How to add functionality to MediaWiki's VisualEditor
+
+I have long wanted to extend VisualEditor (VE), but I recently had an excuse to actually do it.
+
+I'm using a sample extension for this: [[https://www.mediawiki.org/wiki/Extension:VEExtend][VEExtend]].
+
+* Adding to the Format menu
+
+#+html: <img src="img/format-menu.png" align="right"/>
+
+The format menu in contains items that will affect “block level” items like headings, blockquotes and paragraphs. To understand how to add an item here, I'll demonstrate adding an option to center a paragraph on the page.
+
+To do this, I built the VEExtend extension. Wikibase Solution's [[https://wikibase-solutions.com/authors/charlot][Charlot Cobben]] gave me some JavaScript (JS) to use to figure out what I needed to do, but I wanted to create an extension.
+
+So the first step is to inject the JS in time for it to make a difference.  That's where MediaWiki's (MW) hook system comes into play.
+
+To make adjustments to VE interface, use the [[https://www.mediawiki.org/wiki/Extension:VisualEditor/Hooks/VisualEditorBeforeEditor][VisualEditorBeforeEditor hook]].  From the [[https://www.mediawiki.org/wiki/Category:VisualEditorBeforeEditor_extensions][category]] and [[https://codesearch.wmcloud.org/extensions/?q=\bVisualEditorBeforeEditor(Hook)?\b&i=nope&files=&repos=][CodeSearch]], you can see that [[https://www.mediawiki.org/wiki/Help:Extension:Translate][FileImporter]] and [[https://www.mediawiki.org/wiki/Help:Extension:Translate][Translate]] use this hook.  Since both of those extensions are used on WMF wikis, they are probably well-reviewed and good sources to use to duplicate their functionality on your wiki.
+
+Unfortunately, it looks like [[https://gerrit.wikimedia.org/g/mediawiki/extensions/FileImporter/+/8bc547719233ea96b923c0b05973a42074f4dce6/src/VisualEditorHooks.php#19][FileImporter]] and [[https://gerrit.wikimedia.org/g/mediawiki/extensions/Translate/+/0df3076473e0dec3369dde2e068f3c3c44b2866b/src/PageTranslation/Hooks.php#354][Translate]] just [[https://gerrit.wikimedia.org/g/mediawiki/extensions/Translate/+/0df3076473e0dec3369dde2e068f3c3c44b2866b/src/HookHandler.php#251][disables VE]], so there isn't much useful information there.
+
+We'll create a [[https://www.mediawiki.org/wiki/ResourceLoader/Developing_with_ResourceLoader#:~:text=While building the page%2C add one or more,names to the load queue of the page.][ResourceLoader (RL) module]] for our JS called [[./extension.json#L28][ext.VEExtend]] and [[./src/Hooks.php#L32][add it in our hook]].  As you can see, to create something that can be installed as a MW extension, only a very minimal [[./extension.json][=extension.json=]] and [[./src/Hooks.php][=Hooks.php=]] file are needed.

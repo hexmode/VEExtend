@@ -1,0 +1,44 @@
+{
+	"name": "VEExtend",
+	"author": [
+		"Mark A. Hershberger <mah@everybody.org>"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:VEExtend",
+	"descriptionmsg": "veextend-desc",
+	"license-name": "GPL-3.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.41.0",
+		"extensions": {
+			"VisualEditor": "*"
+		}
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\VEExtend\\": "src/"
+	},
+	"HookHandlers": {
+		"VEExtendHooks": {
+			"class": "MediaWiki\\Extension\\VEExtend\\Hooks"
+		}
+	},
+	"Hooks": {
+		"VisualEditorBeforeEditor": "VEExtendHooks"
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "VEExtend/resources"
+	},
+	"ResourceModules": {
+		"ext.VEExtend": {
+			"scripts": [
+			],
+			"styles": [
+			],
+			"dependencies": [
+			],
+			"messages": [
+			]
+		}
+	},
+	"manifest_version": 2
+}
